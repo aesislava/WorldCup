@@ -4,6 +4,10 @@
 		<title>World Cup Results</title>
 		<meta charset='UTF-8' />
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<script scr="jquery-1.11.0.min.js"></script>
+		<script scr="handlebars-v1.3.0.js"></script>
+		<script scr="bootstrap.min.js"></script>
 		<link rel="stylesheet" href="resources/bootstrap.min.css">
 		<link rel="stylesheet" href="resources/style.css">
 
@@ -32,26 +36,21 @@
         <div class="flag right_flag">
         <img src="resources/flags/{{away_code}}.png"><span class="country countryRight" >{{away_name}}</span></div>
       </div>
+
+
       <div class="footer">
         <p>© HackBulgaria 2014</p>
       </div>
+
     </div> <!-- /container -->
-    <script src="resources/jquery-1.11.0.min.js"></script>
-	<script src="resources/handlebars-v1.3.0.js"></script>
-	<script src="resources/bootstrap.min.js"></script>
-    <script>
-    	$(document).ready(function() {
-    		$.getJSON( "http://worldcup.sfg.io/matches/today", function( data ) {
-				console.log(data);
-				  //var items = [];
-				  //$.each( data, function() {
-				   // items.push( "<li id='" + $(this).toString + "</li>" );
-				  //});
-				 
-				  //console.log(items);
-				});
-    	});
-    </script>
+
+
+
+  
+
 </body>
+
+		</div>
+	</body>
 	
 </html>
