@@ -1,0 +1,51 @@
+		hr {
+			margin-top: 35px;
+		}
+		.container {
+			width: 700px;
+		}
+		.flag {
+			position: relative;
+		}
+		.left_flag {
+			margin-left: 75px;
+			float: left;
+		}
+		.right_flag {
+			margin-right: 75px;
+			float: right;
+		}
+		.jumbotron {
+			height: 280px;
+			font-size: 18px;
+		}
+		.results {
+			display: inline;
+			float: left;
+			text-align: center;
+			position: relative;
+			width: 144px;
+			height: 128px;
+			padding: 50px 4px 0px 4px;
+		}
+		.result_left {
+			float: left;
+		}
+		.result_right {
+			float: right;
+		}
+		.progress_bar {
+			width: 580px;
+			height: 20px;
+			background-color: blue;
+			border-radius: 3px;
+			position: relative;
+		}
+		.timer {
+			position: relative;
+			text-align: center;
+			height: auto;
+			width: 580px;
+			margin-top: 18px;
+			margin-bottom: 23px;
+		}
