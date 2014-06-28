@@ -24,9 +24,10 @@
 			float: left;
 			text-align: center;
 			position: relative;
-			width: 226px;
 			height: 128px;
 			padding: 50px 4px 0px 4px;
+			width: 124px;
+
 		}
 		.result_left {
 			float: left;
@@ -52,12 +53,23 @@
 			padding-top: 50px;
 			height: 128px;
 			position: relative;
+			width: 85px;
 		}
 		.countryLeft {
 			float: left;
 			padding-right: 5px;
+			text-align: right;
 		}
 		.countryRight {
 			float: right;
-			padding-left: 5px; 
+			padding-left: 5px;
+			text-align: left; 
+		}
+		.popover {
+			width: 100px;
+			height:60px;
+			float:left;
+			background-color: #ABABAB;
+			border-radius: 3px;
+			
 		}

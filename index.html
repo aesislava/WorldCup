@@ -6,11 +6,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="resources/bootstrap.min.css">
 		<link rel="stylesheet" href="resources/style.css">
-
 	</head>
 	<body>
-		<body>
-
     <div class="container">
       <div class="header">
         <ul class="nav nav-pills pull-right">
@@ -19,18 +16,28 @@
         <h3 class="text-muted">Hack Bulgaria World Cup</h3>
       </div>
 		<hr>
+		<div id="my_container">
+		<script id="match_template" type="text/x-handlebars-template">
+	  {{#each match}}
       <div class="jumbotron">
-      <div class="progress_bar">{{progress}}</div>
-      <div class="timer">{{time_left}} minutes left</div>
+      <div class="progress_bar">{{this.progress}}</div>
+      <div class="timer">{{this.time_left}} minutes left</div>
 
+        <span class="country countryLeft">{{this.home_team.country}}</span>
         <div class="flag left_flag">
-        <img src="resources/flags/{{home_code}}.png"><span class="country countryLeft">{{home_name}}</span></div>
-        <div class="results">
-        	<span class="result_left">{{result_home}}</span>
-        	<span class="result_right">{{result_away}}</span>
+        <img src="resources/flags/{{this.home_team.code}}.png">
         </div>
+        <div class="results">
+        	<span class="result_left">{{this.home_team.goals}}</span>
+        	<span class="result_right">{{this.away_team.goals}}</span>
+        </div>
+        <span class="country countryRight" >{{this.away_team.country}}</span>
         <div class="flag right_flag">
-        <img src="resources/flags/{{away_code}}.png"><span class="country countryRight" >{{away_name}}</span></div>
+        <img src="resources/flags/{{this.away_team.code}}.png">
+        </div>
+      </div>
+      {{/each}}
+      </script>
       </div>
       <div class="footer">
         <p>© HackBulgaria 2014</p>
@@ -40,17 +47,28 @@
 	<script src="resources/handlebars-v1.3.0.js"></script>
 	<script src="resources/bootstrap.min.js"></script>
     <script>
-    	$(document).ready(function() {
-    		$.getJSON( "http://worldcup.sfg.io/matches/today", function( data ) {
-				console.log(data);
-				  //var items = [];
-				  //$.each( data, function() {
-				   // items.push( "<li id='" + $(this).toString + "</li>" );
-				  //});
-				 
-				  //console.log(items);
-				});
-    	});
+    		var MATCHES = {
+    			handlerData : function(resJSON) {
+    				console.log(resJSON);
+		    		var source = $("#match_template").html(); 
+					var template = Handlebars.compile(source); 
+					matchHTML = template({
+						match: resJSON
+					});
+					$('#my_container').html(matchHTML);
+    			},
+    			loadMatchesData : function() {
+    				$.ajax({
+		                url:"http://worldcup.sfg.io/matches/today.json",
+		                method:'get',
+		                success:this.handlerData
+		            });
+    			}
+    		};
+
+    		$(document).ready(function() {
+    			MATCHES.loadMatchesData();
+    		});
     </script>
 </body>
 	
