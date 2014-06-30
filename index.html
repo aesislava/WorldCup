@@ -13,6 +13,7 @@
         <ul class="nav nav-pills pull-right">
           <li class="active"><a href="#">Home</a></li>
         </ul>
+
         <h3 class="text-muted">Hack Bulgaria World Cup</h3>
       </div>
 		<hr>
@@ -20,12 +21,14 @@
 		<script id="match_template" type="text/x-handlebars-template">
 	  {{#each match}}
       <div class="jumbotron">
-      <div class="progress_bar">{{this.progress}}</div>
-      <div class="timer">{{this.time_left}} minutes left</div>
 
+      <div class="timer">{{this.datetime}}</div>
+     
         <span class="country countryLeft">{{this.home_team.country}}</span>
         <div class="flag left_flag">
-        <img src="resources/flags/{{this.home_team.code}}.png">
+        <img class="pop" data-toggle="popover" title="{{this.home_team.country}}" 
+        data-content="{{this.home_team.stats}}" 
+        data-placement="left" src="resources/flags/{{this.home_team.code}}.png">
         </div>
         <div class="results">
         	<span class="result_left">{{this.home_team.goals}}</span>
@@ -33,7 +36,9 @@
         </div>
         <span class="country countryRight" >{{this.away_team.country}}</span>
         <div class="flag right_flag">
-        <img src="resources/flags/{{this.away_team.code}}.png">
+        <img class="pop" data-toggle="popover" title="{{this.away_team.country}}" 
+        data-content="{{this.away_team.stats}}" 
+        data-placement="right" src="resources/flags/{{this.away_team.code}}.png">
         </div>
       </div>
       {{/each}}
@@ -46,30 +51,105 @@
     <script src="resources/jquery-1.11.0.min.js"></script>
 	<script src="resources/handlebars-v1.3.0.js"></script>
 	<script src="resources/bootstrap.min.js"></script>
-    <script>
+  <script src="resources/bootstrap-tooltip.js"></script>
+  <script src="resources/bootstrap-popover.js"></script>
+  <script>src="http://momentjs.com/downloads/moment-with-langs.js"</script>
+  <script src="resources/updater.js"></script>
+
+    <script>      
+       
     		var MATCHES = {
     			handlerData : function(resJSON) {
-    				console.log(resJSON);
 		    		var source = $("#match_template").html(); 
-					var template = Handlebars.compile(source); 
-					matchHTML = template({
-						match: resJSON
-					});
+  					var template = Handlebars.compile(source);
+           
+           var statsArr = [];
+               
+          $.ajax({
+            type: 'GET',
+            url: 'http://worldcup.sfg.io/teams/results',
+            dataType: 'json',
+            success: function(data) {
+              $.each(resJSON, function( index, value ) {
+                var countryHome = resJSON[index].home_team.country;
+                var countryAway = resJSON[index].away_team.country;
+                $.each(data, function( index, value ) {
+                if (data[index].country === countryHome) {
+                  groupH = data[index].group_letter;
+                  winsH = data[index].wins;
+                  lossesH = data[index].losses;
+                  gamesH = data[index].games_played;
+                  }
+                else if (data[index].country === countryAway) {
+                  groupA = data[index].group_letter;
+                  winsA = data[index].wins;
+                  lossesA = data[index].losses;
+                  gamesA = data[index].games_played;
+                }
+              })
+                resJSON[index].home_team.stats = resJSON[index].home_team.country + 
+                ' is in '+ groupH + ' group. With ' + winsH + ' wins, ' + lossesH +
+                ' losses and ' + gamesH + ' games played.';
+                resJSON[index].away_team.stats = resJSON[index].away_team.country + 
+                ' is in '+ groupA + ' group. With ' + winsA + ' wins, ' + lossesA +
+                ' losses and ' + gamesA + ' games played.';
+              });
+            },
+            data: {},
+            async: false
+        }); 
+           
+
+            $.each(resJSON, function( index, value ) {
+              if (resJSON[index].status === "in progress") {
+                var matchStart = new Date(resJSON[index].datetime); 
+                var n = new Date();
+                n = n.valueOf();
+                var matchLength = 105*1000*60;
+                var matchEnd = matchStart.valueOf() + matchLength;
+                var result = matchEnd - n;
+                result = Math.round(result/60000);
+                resJSON[index].datetime = result + ' minutes left.';
+
+                if (result <= 0) {
+                resJSON[index].datetime = 'Unknown time left.';
+                }
+              }
+              else if (resJSON[index].status === "future") {
+                var date = new Date(resJSON[index].datetime);
+                var time = date.toLocaleTimeString();
+                str = time.substring(0, time.length - 3); 
+                resJSON[index].datetime = 'Starts at: ' + str + 'h'; 
+                resJSON[index].home_team.goals = '';
+                resJSON[index].away_team.goals = '';
+              }
+              else if (resJSON[index].status === "completed") {
+                var date = new Date(resJSON[index].datetime);
+                var time = date.toLocaleTimeString();
+                str = time.substring(0, time.length - 3); 
+                resJSON[index].datetime = 'The match has finished.'; 
+              }
+            });
+  					matchHTML = template({
+              match: resJSON,
+  				});
 					$('#my_container').html(matchHTML);
+          $('.pop').popover();
     			},
     			loadMatchesData : function() {
     				$.ajax({
 		                url:"http://worldcup.sfg.io/matches/today.json",
 		                method:'get',
-		                success:this.handlerData
-		            });
+		                success:this.handlerData,
+                    complete: function() {
+                     }
+		        });
     			}
-    		};
-
-    		$(document).ready(function() {
-    			MATCHES.loadMatchesData();
-    		});
+    		};                  
+        $(document).ready(function() {
+          MATCHES.loadMatchesData();
+          setTimeout("location.reload();",60000);
+        });
     </script>
 </body>
-	
 </html>

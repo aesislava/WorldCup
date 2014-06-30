@@ -57,19 +57,18 @@
 		}
 		.countryLeft {
 			float: left;
-			padding-right: 5px;
+			padding-right: 10px;
 			text-align: right;
 		}
 		.countryRight {
 			float: right;
-			padding-left: 5px;
+			padding-left: 10px;
 			text-align: left; 
 		}
 		.popover {
-			width: 100px;
-			height:60px;
-			float:left;
-			background-color: #ABABAB;
-			border-radius: 3px;
-			
+			max-width: 300px!important;
+			width: 275px!important;
+			height: 100px!important;
+			background-color: #fff;		
 		}
+	
